@@ -1,4 +1,6 @@
+// 引入Koa
 const Koa = require('koa')
+// 创建一个Koa实例
 const app = new Koa()
 
 
