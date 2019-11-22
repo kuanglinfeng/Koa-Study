@@ -416,7 +416,84 @@ app.listen(80)
 console.log('服务运行在：http://localhost')
 ```
 
+## 模板引擎`ejs`
 
+在koa中使用模板机制必须依靠中间件，最常用的就是`koa-views`，下面以常用的模板引擎`ejs`为例
 
+1. 安装中间件`koa-views`
+   `npm install --save koa-views`
+2. 安装模板引擎`ejs`
+   `npm install --save ejs`
 
+`/view/index.ejs`
 
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title><%= title %></title>
+</head>
+<body>
+  <h1><%= title %></h1>
+  <p>EJS welcome to <%= title %></p>
+</body>
+</html>
+```
+
+`/10. 模板引擎ejs.js`
+
+```js
+const Koa = require('koa')
+const views = require('koa-views')
+const path = require('path')
+
+const app = new Koa()
+
+// 使用中间件views, 并且在views中 指定模板渲染路径，以及模板渲染引擎
+app.use(views(path.join(__dirname, './view'), {
+  extension: 'ejs'
+}))
+
+// 在模板页里就可以拿到变量title并且渲染出hello flinn了
+app.use(async (ctx) => {
+  let title = 'hello flinn'
+  await ctx.render('index', {title})
+})
+
+app.listen(80, () => {
+  console.log('服务运行在：http://localhost');
+})
+```
+
+## 使用`koa-static`读取静态资源
+
+默认情况下，比如我们在`static`目录下，有一种bear.jpg
+现在开启服务后，我在`http://localhost/static/bear.jpg`想访问
+这张图片，但是结果是读取失败，为了解决这个问题，可以使用`koa-static`
+
+1. 安装`npm install --save koa-static`
+2. 使用
+   ```js
+    const Koa = require('koa')
+    const path = require('path')
+    const static = require('koa-static')
+
+    const app = new Koa()
+
+    const staticPath = './static'
+
+    // 现在static目录下，有一张`bear.jpg`图片，那么这样配置后，
+    // 你可以通过`http://localhost/bear.jpg`访问到这张图片了
+    app.use(static(path.join(__dirname, staticPath)))
+
+    app.use(async (ctx) => {
+      ctx.body = 'hello flinn'
+    })
+
+    app.listen(80, () => {
+      console.log('服务运行在：http://localhost');
+    })
+   ```
