@@ -271,3 +271,31 @@ function render(page) {
 }
 ```
 
+## `koa-router`中间件
+
+1. 安装`npm install --save koa-router`
+2. 导入`const Router = require('koa-router')`
+3. 创建实例`const router = new Router()`
+4. 启用路由&设置响应头
+   ```js
+   app
+   // 启用路由
+    .use(router.routes())
+    // 这是官方文档的推荐用法, 我们可以看到router.allowedMethods()
+    // 用在了路由匹配router.routes()之后, 所以在当所有路由中间件最后调用.
+    // 此时根据ctx.status设置response响应头
+    .use(router.allowedMethods())
+   ```
+5. 使用
+   ```js
+    router
+      .get('/', (ctx, next) => {
+        ctx.body = 'hello flinn'
+      })
+      .get('/todo', (ctx, next) => {
+        ctx.body = 'todo page'
+      })
+   ```
+
+
+

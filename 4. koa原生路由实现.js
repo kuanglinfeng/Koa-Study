@@ -35,13 +35,13 @@ async function route(url) {
       break
     }
     default:
-      break;
+      break
   }
   let html = await render(page)
   return html
 }
 
-app.use(async (ctx) => {
+app.use(async ctx => {
   // 获取url的路径
   let url = ctx.request.url
   // 根据路由地址url 返回一个html
@@ -50,8 +50,6 @@ app.use(async (ctx) => {
   ctx.body = html
 })
 
-
 app.listen(80)
 
-console.log('服务运行在：http://localhost');
-
+console.log('服务运行在：http://localhost')
