@@ -3,18 +3,35 @@ const Router = require('koa-router')
 
 const app = new Koa()
 
-// 现在访问首页以及其它页面，就需要在路径前面加上`/begin`
-const router = new Router({
-  prefix: '/begin'
-})
+// 子路由
+const home = new Router()
+home
+  .get('/flinn', (ctx) => {
+    ctx.body = 'home下的flinn page'
+  })
+  .get('/todo', (ctx) => {
+    ctx.body = 'home下的todo page'
+  })
 
-router
-  .get('/', (ctx, next) => {
-    ctx.body = 'hello flinn'
+// 子路由
+const detail = new Router()
+detail
+  .get('/flinn', ctx => {
+    ctx.body = 'detail下的flinn page'
   })
-  .get('/todo', (ctx, next) => {
-    ctx.body = 'todo page'
+  .get('/todo', ctx => {
+    ctx.body = 'detail下的todo page'
   })
+
+// 父级路由
+const router = new Router()
+
+// 添加子路由/home 当访问/home的时候就会去子路由/home下面匹配路径
+router.use('/home', home.routes(), home.allowedMethods())
+
+// 添加子路由/detail 当访问/detail的时候就会去子路由/detail下面匹配路径
+router.use('/detail', detail.routes(), detail.allowedMethods())
+
 
 app
   // 启用路由
